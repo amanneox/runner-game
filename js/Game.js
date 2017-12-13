@@ -14,6 +14,7 @@ SideScroller.Game.prototype = {
     this.tileSize = 70;
     this.probCliff = 0.4;
     this.probVertical = 0.4;
+    this.probCactus=.12;
     this.probMoreVertical = 0.5;
 
     //initiate groups, we'll recycle elements
@@ -33,8 +34,13 @@ SideScroller.Game.prototype = {
       newItem.body.immovable = true;
       newItem.body.velocity.x = this.levelSpeed;
     }
-    this.game.add.tileSprite(0, 0, 800 * 4, 700, 'bg');
-
+    //this.game.add.tileSprite(0, 0, 800 * 4, 700, 'bg');
+    this.mountainsBack = this.game.add.tileSprite(0, this.game.height - this.game.cache.getImage('bg').height-70,
+       this.game.width,
+       this.game.cache.getImage('bg').height,
+       'bg'
+   );
+//this.game.stage.backgroundColor = '#697e96';
     //keep track of the last floor
     this.lastFloor = newItem;
 
@@ -54,6 +60,16 @@ SideScroller.Game.prototype = {
       newItem.body.velocity.x = this.levelSpeed;
     }
 */
+
+
+this.cactus = this.game.add.group();
+this.cactus.enableBody = true;
+this.cactus.createMultiple(6, 'cactus');
+this.cactus.setAll('anchor.x', 0.5);
+this.cactus.setAll('anchor.y', 1);
+this.cactus.setAll('outOfBoundsKill', true);
+this.cactus.setAll('checkWorldBounds', true);
+
     this.goldcoin = this.game.add.group();
     this.goldcoin.enableBody = true;
     this.goldcoin.physicsBodyType = Phaser.Physics.ARCADE;
@@ -62,8 +78,8 @@ SideScroller.Game.prototype = {
     this.goldcoin.setAll('anchor.y', 1);
     this.goldcoin.setAll('outOfBoundsKill', true);
     this.goldcoin.setAll('checkWorldBounds', true);
-this.game.time.events.loop(Phaser.Timer.SECOND * 5 + this.game.rnd.frac() * 10, this.launchCoin, this);
-
+//this.game.time.events.loop(Phaser.Timer.SECOND * 5 + this.game.rnd.frac() * 10, this.launchCoin, this);
+this.coincounter=0;
     this.coins = this.game.add.group();
     this.coins.enableBody = true;
 
@@ -196,15 +212,33 @@ this.game.time.events.loop(Phaser.Timer.SECOND * 5 + this.game.rnd.frac() * 10, 
           block.body.velocity.x = this.levelSpeed;
           block.body.immovable = true;
 
+
+          upblock = this.goldcoin.getFirstExists(false);
+          upblock.reset(this.lastFloor.body.x + this.tileSize, this.game.world.height - 4 * this.tileSize);
+          upblock.body.velocity.x = this.levelSpeed;
+          upblock.body.immovable = true;
+
+
+
+
           if(Math.random() < this.probMoreVertical) {
             block = this.verticalObstacles.getFirstExists(false);
+            upblock=this.goldcoin.getFirstExists(false);
             if(block) {
               block.reset(this.lastFloor.body.x + this.tileSize, this.game.world.height - 1 * this.tileSize);
               block.body.velocity.x = this.levelSpeed;
               block.body.immovable = true;
             }
-          }
 
+          }
+if (Math.random() < this.probCactus && !this.lastCliff) {
+  this.lastCliff = false;
+  this.lastVertical = true;
+  cactus = this.cactus.getFirstExists(false);
+  cactus.reset(this.lastFloor.body.x + this.tileSize, this.game.world.height - 1 * this.tileSize);
+  cactus.body.velocity.x = this.levelSpeed;
+  cactus.body.immovable = true;
+}
         }
         else {
           this.lastCliff = false;
@@ -238,7 +272,7 @@ this.game.time.events.loop(Phaser.Timer.SECOND * 5 + this.game.rnd.frac() * 10, 
   collect: function(player, collectable) {
     //play audio
     this.coinSound.play();
-
+this.coincounter++;
     //remove sprite
     collectable.destroy();
   },
@@ -317,7 +351,7 @@ this.game.time.events.loop(Phaser.Timer.SECOND * 5 + this.game.rnd.frac() * 10, 
   render: function()
     {
       this.distance=Math.ceil(this.game.time.totalElapsedSeconds());
-         this.game.debug.text(this.distance , 32, 32,"#000");
+         this.game.debug.text(this.coincounter+" Coins" , 32, 32,"#000");
 
     }
 };
