@@ -13,17 +13,17 @@ SideScroller.Preload.prototype = {
     this.load.setPreloadSprite(this.preloadBar);
 
     //load game assets
-    this.load.image('player', 'assets/images/player/PNG/Player/poses/player_stand.png');
-      this.load.image('walk1', 'assets/images/player/PNG/Player/poses/player_walk1.png');
-        this.load.image('walk2', 'assets/images/player/PNG/Player/poses/player_walk2.png');
-        this.load.image('jump', 'assets/images/player/PNG/Player/poses/player_jump.png');
+    this.load.image('player', 'assets/images/player_stand.png');
+      this.load.image('walk1', 'assets/images/player_walk1.png');
+        this.load.image('walk2', 'assets/images/player_walk2.png');
+        this.load.image('jump', 'assets/images/player_jump.png');
     this.load.image('playerDuck', 'assets/images/player/PNG/Player/poses/player_duck.png');
     this.load.image('playerDead', 'assets/images/player/PNG/Player/poses/player_hurt.png');
     this.load.image('goldCoin', 'assets/images/goldCoin.png');
 
       this.load.image('coinhud', 'assets/images/coin_gold.png');
         this.load.image('carrothud', 'assets/images/carrots.png');
-        
+
     this.load.image('floor', 'assets/images/ground.png');
       this.load.image('floor1', 'assets/images/ground1.png');
         this.load.image('floor2', 'assets/images/ground2.png');
