@@ -5,6 +5,7 @@ SideScroller.title = function(){};
 
 SideScroller.title.prototype = {
      create: function(){
+
           var title = this.game.add.sprite(this.game.width / 2, 60, "gametitle");
           title.anchor.set(0.5);
           var grid = this.game.add.sprite(this.game.width / 2, 130, "gridedition");

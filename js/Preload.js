@@ -23,6 +23,8 @@ SideScroller.Preload.prototype = {
 
   this.load.image('goldCoin', 'assets/images/goldCoin.png');
   this.load.image('cactus', 'assets/images/cactus.png');
+    this.load.image('cloud', 'assets/images/cloud.png');
+      this.load.image('enemy', 'assets/images/spike.png');
 
 
       this.load.image('coinhud', 'assets/images/coin_gold.png');
@@ -46,6 +48,7 @@ SideScroller.Preload.prototype = {
 
   },
   create: function() {
+
     this.state.start('Game');
   }
 };

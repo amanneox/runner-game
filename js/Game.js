@@ -16,7 +16,7 @@ SideScroller.Game.prototype = {
     this.probVertical = 0.4;
     this.probCactus=.12;
     this.probMoreVertical = 0.5;
-
+this.probSpike=.2;
     //initiate groups, we'll recycle elements
     this.floors = this.game.add.group();
     this.floors.enableBody = true;
@@ -54,12 +54,28 @@ SideScroller.Game.prototype = {
     this.verticalObstacles.setAll('checkWorldBounds', true);
     this.verticalObstacles.setAll('outOfBoundsKill', true);
 
+    this.Spike = this.game.add.group();
+    this.Spike.enableBody = true;
+    this.Spike.createMultiple(12, 'enemy');
+    this.Spike.setAll('anchor.x', 0.5);
+    this.Spike.setAll('anchor.y', 1);
+    //this.Spike.scale.setTo(0.9,.9 );
+
+    this.Spike.setAll('checkWorldBounds', true);
+    this.Spike.setAll('outOfBoundsKill', true);
     /*for(var i=0; i<12; i++) {
       newItem = this.verticalObstacles.create(null, this.game.world.height - this.tileSize, 'floor');
       newItem.body.immovable = true;
       newItem.body.velocity.x = this.levelSpeed;
     }
 */
+this.enemy = this.game.add.group();
+this.enemy.enableBody = true;
+this.enemy.createMultiple(6, 'enemy');
+this.enemy.setAll('anchor.x', 0.5);
+this.enemy.setAll('anchor.y', 1);
+this.enemy.setAll('outOfBoundsKill', true);
+this.enemy.setAll('checkWorldBounds', true);
 
 
 this.cactus = this.game.add.group();
@@ -78,7 +94,7 @@ this.cactus.setAll('checkWorldBounds', true);
     this.goldcoin.setAll('anchor.y', 1);
     this.goldcoin.setAll('outOfBoundsKill', true);
     this.goldcoin.setAll('checkWorldBounds', true);
-//this.game.time.events.loop(Phaser.Timer.SECOND * 5 + this.game.rnd.frac() * 10, this.launchCoin, this);
+//this.game.time.events.loop(Phaser.Timer.SECOND * 5 + this.game.rnd.frac() * 10, this.launchEnemy, this);
 this.coincounter=0;
     this.coins = this.game.add.group();
     this.coins.enableBody = true;
@@ -121,23 +137,23 @@ this.coincounter=0;
       this.dieSound = this.game.add.audio('die');
       this.jumpSound = this.game.add.audio('jump');
   },
-  launchCoin:function() {
+  launchEnemy:function() {
       var MIN_ENEMY_SPACING = 300;
       var MAX_ENEMY_SPACING = 3000;
       var ENEMY_SPEED = 300;
 
-      var coin = this.goldcoin.getFirstExists(false);
-      if (coin) {
-          coin.reset(this.game.rnd.integerInRange(0, this.game.width), -20);
-          coin.body.velocity.x = this.game.rnd.integerInRange(-300, 300);
-          coin.body.velocity.y = ENEMY_SPEED;
-          coin.body.drag.x = 100;
+      var enemy = this.enemy.getFirstExists(false);
+      if (enemy) {
+          enemy.reset(this.game.rnd.integerInRange(0, this.game.width), -20);
+          enemy.body.velocity.x =- this.game.rnd.integerInRange(-300, 300);
+          enemy.body.velocity.y =- ENEMY_SPEED;
+          enemy.body.drag.x = 0;
 
-          coin.update = function() {
-              coin.angle = 90;
+          enemy.update = function() {
+              enemy.angle = 0;
 
-              if (coin.y > this.game.height + 200) {
-                  coin.kill();
+              if (enemy.y > this.game.height + 200) {
+                  enemy.kill();
               }
           }
       }
@@ -148,6 +164,7 @@ this.coincounter=0;
   update: function() {
     //collision
     this.game.physics.arcade.collide(this.player, this.floors, this.playerHit, null, this);
+    this.game.physics.arcade.overlap(this.player, this.Spike, this.playerHit, null, this);
     this.game.physics.arcade.collide(this.player, this.verticalObstacles, this.playerHit, null, this);
     this.game.physics.arcade.collide(this.player, this.goldcoin, this.collect, null, this);
     //this.game.physics.arcade.overlap(this.player, this.coins, this.collect, null, this);
@@ -238,7 +255,18 @@ if (Math.random() < this.probCactus && !this.lastCliff) {
   cactus.reset(this.lastFloor.body.x + this.tileSize, this.game.world.height - 1 * this.tileSize);
   cactus.body.velocity.x = this.levelSpeed;
   cactus.body.immovable = true;
+
+
+
+
 }
+if (Math.random() < this.probSpike) {
+Spike = this.Spike.getFirstExists(false);
+Spike.reset(this.lastFloor.body.x + this.tileSize, this.game.world.height - 1 * this.tileSize);
+Spike.body.velocity.x = this.levelSpeed;
+Spike.body.immovable = true;
+}
+
         }
         else {
           this.lastCliff = false;
